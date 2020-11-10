@@ -73,9 +73,7 @@ int main() {
             	//if it is, set a tempoary node to equal to head
               Node* temp = head;
               // the head becomes the next node in the list
-              head = head->getNext();
-              //delete the node to be deleted (held in temporary)
-              delete temp;      
+              head = head->getNext();A   
             }
             //otherwise just delete;
             else {
@@ -85,8 +83,6 @@ int main() {
             	Node* temp = head;
             	//run the delete function
             	deleteStudent(temp, id, previous);
-            	//delete the previous created node 
-            	delete previous;
         	}
 		}
 		else if (strcmp(input, "QUIT") == 0) {
@@ -172,26 +168,28 @@ void deleteStudent(Node* &head, int id, Node* &previous) {
 	if (head != NULL) {
 		//then compare the current node to the id of the student and if they are the same ->
 		if(current->getStudent()->getID() == id) {
-			//check if the current node is the last node in the list
+			//check if the current node is the last node in the list, then set the second to last =null
 			if (current->getNext() == NULL) {
-				//if it is, hold the current into the previous
-				previous = current;
 				//if the previous is not null
 				if (previous != NULL) {
-					//then set the previous back to null
-					previous = NULL;
+					//then set the previous to null
+					previous->setNext(NULL);
 				}
 				//otherwise just delete the current node
 				delete current;
 			}
+			//skip over current and delete current
 			else if (previous != NULL) {
+				//connects the previous node the node after the current one
 				previous->setNext(current->getNext());
+				//deletes the current nodt\e
 				delete current;
 			}
 		}
+		//otherwise do it again
 		else {
-			head = head->getNext();
-			deleteStudent(head, id, previous);
+			Node* next = current->getNext();
+			deleteStudent(next, id, current);
 		}
 	}
 }
