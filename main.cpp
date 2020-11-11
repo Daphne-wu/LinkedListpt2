@@ -8,9 +8,9 @@
 
 
 
-void add(Node* head, Node* node, Node* previous);
-void printList(Node* next);
-void deleteStudent(Node* &head, int id, Node* &previous);
+void add(Node* &head, Node* node, Node* previous);
+void printList(Node* head);
+void deleteStudent(Node* &head, int id, Node* previous);
 void askForInfo(Student* student);
 float average(Node* head);
 
@@ -68,22 +68,8 @@ int main() {
             cout << "Which id would you like to delete?\n";
             cin >> id;
             cin.get();
-            //first check if the first node is the one to be deleted
-            if (head->getStudent()->getID() == id) {
-            	//if it is, set a tempoary node to equal to head
-              Node* temp = head;
-              // the head becomes the next node in the list
-              head = head->getNext();A   
-            }
-            //otherwise just delete;
-            else {
-            	//create a node to hold the previous value
-            	Node *previous = NULL;
-            	//set a temp variable to be the head
-            	Node* temp = head;
-            	//run the delete function
-            	deleteStudent(temp, id, previous);
-        	}
+            Node *previous = NULL;
+            deleteStudent(head, id, previous);
 		}
 		else if (strcmp(input, "QUIT") == 0) {
 			playing = false;
@@ -103,7 +89,7 @@ int main() {
 //After you type in add, the program should prompt for first name, last name, student id, and GPA.  
 //You should then insert a new node into your linked list, sorting it by student id number (least to greatest).
 // USE RECURSION. (20 points)
-void add(Node* head, Node* node, Node* previous) {
+void add(Node* &head, Node* node, Node* previous) {
 	Node* current = head;
 	bool check = false;
 
@@ -123,7 +109,8 @@ void add(Node* head, Node* node, Node* previous) {
 		else {
             if (current->getNext() != NULL && check == false) {
                 previous = current;
-                add(current->getNext(), node, previous);
+                Node* nhead = current->getNext();
+                add(nhead, node, previous);
             }
             // if no nodes are less than the added node, then its tagged on at the end
             else if (current->getNext() == NULL) {
@@ -152,20 +139,24 @@ float average(Node* head) {
 }
 
 //prints student
-void printList(Node* next) {
-	  if (next != NULL) {
-            cout << "Name: " << next->getStudent()->getFirst() << " " << next->getStudent()->getLast() << " ID: " << next->getStudent()->getID() << " GPA: " << fixed << setprecision(2) << next->getStudent()->getGPA() << endl;
-            next = next->getNext();
-            printList(next);
+void printList(Node* head) {
+	  if (head != NULL) {
+            cout << "Name: " << head->getStudent()->getFirst() << " " << head->getStudent()->getLast() << " ID: " << head->getStudent()->getID() << " GPA: " << fixed << setprecision(2) << head->getStudent()->getGPA() << endl;
+            head = head->getNext();
+            printList(head);
     }
 }
 
 //delete student fuction
-void deleteStudent(Node* &head, int id, Node* &previous) {
+void deleteStudent(Node* &head, int id, Node* previous) {
 	//set a current node equal to the head
 	Node* current = head;
 	// if the head exists
 	if (head != NULL) {
+		 if (head->getStudent()->getID() == id) {
+             head = head->getNext();
+    		 return;
+        }
 		//then compare the current node to the id of the student and if they are the same ->
 		if(current->getStudent()->getID() == id) {
 			//check if the current node is the last node in the list, then set the second to last =null
